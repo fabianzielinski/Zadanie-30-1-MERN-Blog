@@ -12,15 +12,15 @@ class Posts extends React.Component {
   }
 
   render() {
-    const { posts } = this.props;
+  const { posts, request } = this.props;
 
-  	return (
-  		<div>
-    		<PostsList posts={posts} />
-    		<Spinner />
-  		</div>
-	);
-  }
+  return (
+    <div>
+      {request.pending && <Spinner />}
+      <PostsList posts={posts} />
+    </div>
+  );
+}
 
 };
 

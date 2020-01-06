@@ -4,6 +4,7 @@ import { API_URL } from '../config';
 /* SELECTORS */
 
 export const getPosts = ({ posts }) => posts.data;
+export const getRequest = ({ posts }) => posts.request;
 export const startRequest = () => ({ type: START_REQUEST });
 export const endRequest = () => ({ type: END_REQUEST });
 
@@ -51,14 +52,16 @@ export default function reducer(statePart = initialState, action = {}) {
 export const loadPostsRequest = () => {
   return async dispatch => {
 
+    dispatch(startRequest());
     try {
 
       let res = await axios.get(`${API_URL}/posts`);
       await new Promise((resolve, reject) => setTimeout(resolve, 2000));
       dispatch(loadPosts(res.data));
+      dispatch(endRequest());
 
     } catch(e) {
-      console.log(e.message);
+      dispatch(endRequest());
     }
 
   };
