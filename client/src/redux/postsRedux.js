@@ -23,12 +23,18 @@ export const START_REQUEST = createActionName('START_REQUEST');
 
 export const END_REQUEST = createActionName('END_REQUEST');
 
+export const ERROR_REQUEST = createActionName('ERROR_REQUEST');
+
+export const errorRequest = error => ({ error, type: ERROR_REQUEST });
+
 /* INITIAL STATE */
 
 const initialState = {
   data: [],
   request: {
     pending: false,
+    error: null,
+    success: null,
   },
 };
 
@@ -39,9 +45,11 @@ export default function reducer(statePart = initialState, action = {}) {
     case LOAD_POSTS:
       return { ...statePart, data: action.payload };
     case START_REQUEST:
-  		return { ...statePart, request: { pending: true } };
+  	  return { ...statePart, request: { pending: true, error: null, success: null } };
 	case END_REQUEST:
-  		return { ...statePart, request: { pending: false } };
+      return { ...statePart, request: { pending: false, error: null, success: true } };
+    case ERROR_REQUEST:
+  	  return { ...statePart, request: { pending: false, error: action.error, success: false } };
     default:
       return statePart;
   }
@@ -61,7 +69,7 @@ export const loadPostsRequest = () => {
       dispatch(endRequest());
 
     } catch(e) {
-      dispatch(endRequest());
+      dispatch(errorRequest(e.message));
     }
 
   };
